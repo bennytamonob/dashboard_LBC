@@ -97,55 +97,75 @@
                 <div id="tab-ringkasan">
                     <!-- Kartu Statistik -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Total Peserta Diundang</p>
-                        <h3 id="stat-total-peserta" class="text-4xl font-bold text-green-800 relative z-10">0</h3>
-                    </div>
-                    
-                    <!-- Kartu 2 -->
-                    <div class="bg-white p-6 rounded-2xl shadow-md border border-blue-50 relative overflow-hidden group">
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
-                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Undangan Terkirim</p>
-                        <h3 id="stat-terkirim" class="text-4xl font-bold text-blue-600 relative z-10">0</h3>
+                        
+                        <!-- Kartu 1 -->
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-green-50 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                            <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Total Peserta Diundang</p>
+                            <h3 id="stat-total-peserta" class="text-4xl font-bold text-green-800 relative z-10">0</h3>
+                            <div class="mt-2 text-xs font-medium text-gray-500 relative z-10 flex space-x-3">
+                                <span class="bg-blue-50 px-2 py-1 rounded border border-blue-100"><span class="text-blue-600">Laki-laki:</span> <span id="stat-total-l">0</span></span>
+                                <span class="bg-pink-50 px-2 py-1 rounded border border-pink-100"><span class="text-pink-600">Perempuan:</span> <span id="stat-total-p">0</span></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Kartu 2 -->
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-blue-50 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                            <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Undangan Terkirim</p>
+                            <h3 id="stat-terkirim" class="text-4xl font-bold text-blue-600 relative z-10">0</h3>
+                            <div class="mt-2 text-xs font-medium text-gray-500 relative z-10 flex space-x-3">
+                                <span class="bg-blue-50 px-2 py-1 rounded border border-blue-100"><span class="text-blue-600">Laki-laki:</span> <span id="stat-terkirim-l">0</span></span>
+                                <span class="bg-pink-50 px-2 py-1 rounded border border-pink-100"><span class="text-pink-600">Perempuan:</span> <span id="stat-terkirim-p">0</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Kartu 3 -->
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-emerald-50 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                            <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Sudah Daftar Ulang</p>
+                            <h3 id="stat-daftar" class="text-4xl font-bold text-emerald-600 relative z-10">0</h3>
+                            <div class="mt-2 text-xs font-medium text-gray-500 relative z-10 flex space-x-3">
+                                <span class="bg-blue-50 px-2 py-1 rounded border border-blue-100"><span class="text-blue-600">Laki-laki:</span> <span id="stat-daftar-l">0</span></span>
+                                <span class="bg-pink-50 px-2 py-1 rounded border border-pink-100"><span class="text-pink-600">Perempuan:</span> <span id="stat-daftar-p">0</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Kartu 4 -->
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-red-50 relative overflow-hidden group">
+                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                            <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Konfirmasi Tidak Hadir</p>
+                            <h3 id="stat-tidak-hadir" class="text-4xl font-bold text-red-500 relative z-10">0</h3>
+                            <div class="mt-2 text-xs font-medium text-gray-500 relative z-10 flex space-x-3">
+                                <span class="bg-blue-50 px-2 py-1 rounded border border-blue-100"><span class="text-blue-600">Laki-laki:</span> <span id="stat-tidak-hadir-l">0</span></span>
+                                <span class="bg-pink-50 px-2 py-1 rounded border border-pink-100"><span class="text-pink-600">Perempuan:</span> <span id="stat-tidak-hadir-p">0</span></span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Kartu 3 -->
-                    <div class="bg-white p-6 rounded-2xl shadow-md border border-emerald-50 relative overflow-hidden group">
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
-                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Sudah Daftar Ulang</p>
-                        <h3 id="stat-daftar" class="text-4xl font-bold text-emerald-600 relative z-10">0</h3>
+                    <!-- Tabel Peserta Tidak Hadir -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                        <div class="bg-green-700 px-6 py-4">
+                            <h3 class="text-lg font-bold text-white">Daftar Peserta Tidak Hadir</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-green-50 text-green-900 border-b border-green-200">
+                                        <th class="px-6 py-3 font-semibold text-sm w-16 text-center">No</th>
+                                        <th class="px-6 py-3 font-semibold text-sm w-1/3">Nama Peserta</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Alasan Tidak Hadir</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-tidak-hadir" class="divide-y divide-gray-100">
+                                    <!-- Data akan diisi otomatis oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="empty-state" class="hidden p-8 text-center text-gray-500">
+                            Belum ada data peserta yang tidak hadir.
+                        </div>
                     </div>
-
-                    <!-- Kartu 4 -->
-                    <div class="bg-white p-6 rounded-2xl shadow-md border border-red-50 relative overflow-hidden group">
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
-                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Konfirmasi Tidak Hadir</p>
-                        <h3 id="stat-tidak-hadir" class="text-4xl font-bold text-red-500 relative z-10">0</h3>
-                    </div>
-                </div>
-
-                <!-- Tabel Peserta Tidak Hadir -->
-                <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-                    <div class="bg-green-700 px-6 py-4">
-                        <h3 class="text-lg font-bold text-white">Daftar Peserta Tidak Hadir</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-green-50 text-green-900 border-b border-green-200">
-                                    <th class="px-6 py-3 font-semibold text-sm w-16 text-center">No</th>
-                                    <th class="px-6 py-3 font-semibold text-sm w-1/3">Nama Peserta</th>
-                                    <th class="px-6 py-3 font-semibold text-sm">Alasan Tidak Hadir</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-tidak-hadir" class="divide-y divide-gray-100">
-                                <!-- Data akan diisi otomatis oleh JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="empty-state" class="hidden p-8 text-center text-gray-500">
-                        Belum ada data peserta yang tidak hadir.
-                    </div>
-                </div>
                 </div> <!-- Akhir Tab Ringkasan -->
 
                 <!-- TAB DATA PESERTA -->
@@ -161,6 +181,7 @@
                                         <th class="px-6 py-3 font-semibold text-sm text-center">No</th>
                                         <th class="px-6 py-3 font-semibold text-sm">Nama Lengkap</th>
                                         <th class="px-6 py-3 font-semibold text-sm">Status</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Jenis Kelamin</th>
                                         <th class="px-6 py-3 font-semibold text-sm">Tempat Lahir</th>
                                         <th class="px-6 py-3 font-semibold text-sm">Tanggal Lahir</th>
                                         <th class="px-6 py-3 font-semibold text-sm">No WA</th>
@@ -248,26 +269,34 @@
             content.classList.add('hidden');
             if (tabNav) tabNav.classList.add('hidden');
 
-            // Menggunakan parameter action=getDashboard dengan mode no-cors dihindari untuk menerima JSON
             fetch(scriptURL + '?action=getDashboard')
-                .then(response => response.text()) // Ambil teks mentah dulu untuk mengecek error
+                .then(response => response.text()) 
                 .then(text => {
                     try {
                         const data = JSON.parse(text);
 
-                        // Cek jika Apps Script mendeteksi error (misal: nama sheet salah)
                         if (data.error) {
                             console.error("Error dari Apps Script:", data.error);
                             alert("TERJADI KESALAHAN DI DATABASE:\n" + data.error + "\n\nPastikan nama sheet di bawah Google Sheets Anda PERSIS bernama 'Data_Respon' dan 'Link Undangan' tanpa spasi tambahan.");
                             loading.classList.add('hidden');
-                            return; // Hentikan eksekusi
+                            return;
                         }
 
-                        // Update Angka Statistik
+                        // Update Angka Statistik Total
                         document.getElementById('stat-total-peserta').innerText = data.total_peserta || 0;
                         document.getElementById('stat-daftar').innerText = data.sudah_daftar || 0;
                         document.getElementById('stat-terkirim').innerText = data.undangan_terkirim || 0;
                         document.getElementById('stat-tidak-hadir').innerText = data.total_tidak_hadir || 0;
+
+                        // Update Rincian Gender (Laki-laki & Perempuan)
+                        document.getElementById('stat-total-l').innerText = data.total_peserta_l || 0;
+                        document.getElementById('stat-total-p').innerText = data.total_peserta_p || 0;
+                        document.getElementById('stat-terkirim-l').innerText = data.terkirim_l || 0;
+                        document.getElementById('stat-terkirim-p').innerText = data.terkirim_p || 0;
+                        document.getElementById('stat-daftar-l').innerText = data.daftar_l || 0;
+                        document.getElementById('stat-daftar-p').innerText = data.daftar_p || 0;
+                        document.getElementById('stat-tidak-hadir-l').innerText = data.tidak_hadir_l || 0;
+                        document.getElementById('stat-tidak-hadir-p').innerText = data.tidak_hadir_p || 0;
 
                         // Update Tabel Tidak Hadir
                         const tbody = document.getElementById('tabel-tidak-hadir');
@@ -290,7 +319,7 @@
                             emptyState.classList.remove('hidden');
                         }
 
-                        // Update Tabel Semua Peserta (Sheet1)
+                        // Update Tabel Semua Peserta
                         const tbodyPeserta = document.getElementById('tabel-semua-peserta');
                         const emptyStatePeserta = document.getElementById('empty-state-peserta');
                         if (tbodyPeserta) tbodyPeserta.innerHTML = '';
@@ -302,14 +331,15 @@
                                 tr.className = "hover:bg-gray-50 transition";
                                 tr.innerHTML = `
                                     <td class="px-6 py-4 text-sm text-gray-500 text-center">${index + 1}</td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">${item.nama}</td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-green-600">${item.status}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">${item.tempat_lahir}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">${item.tanggal_lahir}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">${item.no_wa}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-xs" title="${item.alamat}">${item.alamat}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">${item.area}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">${item.kontak_darurat}</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">${item.nama || '-'}</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-green-600">${item.status || '-'}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-800 font-medium">${item.jenis_kelamin || '-'}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.tempat_lahir || '-'}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.tanggal_lahir || '-'}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.no_wa || '-'}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-xs" title="${item.alamat}">${item.alamat || '-'}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.area || '-'}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.kontak_darurat || '-'}</td>
                                 `;
                                 if (tbodyPeserta) tbodyPeserta.appendChild(tr);
                             });
@@ -322,7 +352,6 @@
                         if (tabNav) tabNav.classList.remove('hidden');
 
                     } catch (e) {
-                        // Jika yang dikembalikan Google BUKAN JSON, melainkan halaman login (akses ditolak)
                         console.error("Format bukan JSON, respons server:", text);
                         alert("AKSES DITOLAK!\n\nPastikan pengaturan Deployment Google Apps Script bagian 'Who has access' (Siapa yang memiliki akses) disetel ke 'Anyone' (Siapa saja). Bukan 'Anyone with Google Account'.");
                         loading.classList.add('hidden');
