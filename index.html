@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Leadership Boot Camp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #16a34a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen text-gray-800">
+
+    <!-- HALAMAN LOGIN -->
+    <div id="login-section" class="flex items-center justify-center min-h-screen p-4 fade-in">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border-t-8 border-green-600">
+            <div class="text-center mb-8">
+                <img src="https://i.ibb.co.com/ymkyHVkp/LOGO-FIX.png" alt="Logo" class="w-20 mx-auto mb-4 drop-shadow-md">
+                <h2 class="text-2xl font-bold text-green-800">Login Admin</h2>
+                <p class="text-sm text-gray-500 mt-1">Dashboard Leadership Boot Camp</p>
+            </div>
+            
+            <form id="login-form" class="space-y-5" onsubmit="handleLogin(event)">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                    <input type="text" id="username" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition" placeholder="Masukkan username">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none transition" placeholder="Masukkan password">
+                </div>
+                <div id="login-error" class="hidden text-red-500 text-sm font-semibold text-center">
+                    Username atau Password salah!
+                </div>
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all">
+                    Masuk Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- HALAMAN DASHBOARD (Disembunyikan awalnya) -->
+    <div id="dashboard-section" class="hidden min-h-screen p-4 md:p-8 fade-in">
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- Header Dashboard -->
+            <div class="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-md mb-8 border-l-8 border-green-600">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="https://i.ibb.co.com/ymkyHVkp/LOGO-FIX.png" alt="Logo" class="w-16 mr-4 drop-shadow-sm">
+                    <div>
+                        <h1 class="text-2xl font-bold text-green-900">Dashboard Edukasi</h1>
+                        <p class="text-sm text-gray-500">Leadership Boot Camp 2026</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="fetchData()" class="px-4 py-2 bg-green-100 text-green-700 font-semibold rounded-lg hover:bg-green-200 transition">
+                        ↻ Refresh Data
+                    </button>
+                    <button onclick="logout()" class="px-4 py-2 bg-red-100 text-red-600 font-semibold rounded-lg hover:bg-red-200 transition">
+                        Keluar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Navigasi -->
+            <div id="tab-navigation" class="hidden flex space-x-2 mb-6 border-b border-gray-200 pb-2">
+                <button onclick="switchTab('ringkasan')" id="btn-tab-ringkasan" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition">Ringkasan Statistik</button>
+                <button onclick="switchTab('peserta')" id="btn-tab-peserta" class="px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition">Data Peserta</button>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="flex flex-col items-center justify-center py-12">
+                <div class="loader mb-4"></div>
+                <p class="text-green-800 font-semibold">Mengambil data dari server...</p>
+            </div>
+
+            <!-- Content Dashboard (Disembunyikan saat loading) -->
+            <div id="dashboard-content" class="hidden">
+                
+                <!-- TAB RINGKASAN -->
+                <div id="tab-ringkasan">
+                    <!-- Kartu Statistik -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Total Peserta Diundang</p>
+                        <h3 id="stat-total-peserta" class="text-4xl font-bold text-green-800 relative z-10">0</h3>
+                    </div>
+                    
+                    <!-- Kartu 2 -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-blue-50 relative overflow-hidden group">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Undangan Terkirim</p>
+                        <h3 id="stat-terkirim" class="text-4xl font-bold text-blue-600 relative z-10">0</h3>
+                    </div>
+
+                    <!-- Kartu 3 -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-emerald-50 relative overflow-hidden group">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Sudah Daftar Ulang</p>
+                        <h3 id="stat-daftar" class="text-4xl font-bold text-emerald-600 relative z-10">0</h3>
+                    </div>
+
+                    <!-- Kartu 4 -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-red-50 relative overflow-hidden group">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-100 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+                        <p class="text-sm font-semibold text-gray-500 mb-1 relative z-10">Konfirmasi Tidak Hadir</p>
+                        <h3 id="stat-tidak-hadir" class="text-4xl font-bold text-red-500 relative z-10">0</h3>
+                    </div>
+                </div>
+
+                <!-- Tabel Peserta Tidak Hadir -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                    <div class="bg-green-700 px-6 py-4">
+                        <h3 class="text-lg font-bold text-white">Daftar Peserta Tidak Hadir</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-green-50 text-green-900 border-b border-green-200">
+                                    <th class="px-6 py-3 font-semibold text-sm w-16 text-center">No</th>
+                                    <th class="px-6 py-3 font-semibold text-sm w-1/3">Nama Peserta</th>
+                                    <th class="px-6 py-3 font-semibold text-sm">Alasan Tidak Hadir</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-tidak-hadir" class="divide-y divide-gray-100">
+                                <!-- Data akan diisi otomatis oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="empty-state" class="hidden p-8 text-center text-gray-500">
+                        Belum ada data peserta yang tidak hadir.
+                    </div>
+                </div>
+                </div> <!-- Akhir Tab Ringkasan -->
+
+                <!-- TAB DATA PESERTA -->
+                <div id="tab-peserta" class="hidden">
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                        <div class="bg-green-700 px-6 py-4 flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-white">Daftar Seluruh Peserta (Pendaftaran Ulang)</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse whitespace-nowrap">
+                                <thead>
+                                    <tr class="bg-green-50 text-green-900 border-b border-green-200">
+                                        <th class="px-6 py-3 font-semibold text-sm text-center">No</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Nama Lengkap</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Status</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Tempat Lahir</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Tanggal Lahir</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">No WA</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Alamat Lengkap</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Area Pelayanan</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Kontak Darurat</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-semua-peserta" class="divide-y divide-gray-100">
+                                    <!-- Data diisi otomatis -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="empty-state-peserta" class="hidden p-8 text-center text-gray-500">
+                            Belum ada data pendaftaran masuk.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center text-gray-400 text-sm mt-8">
+                &copy; 2026 Departemen Edukasi Abbalove Bali
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxETApEVLbkclC3L-bTsJAIyWdbmPQshghsQTdjNSLZRx8u3ODDfCuN0yH9n6Dbh1B_/exec';
+
+        // Fungsi Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('login-error');
+
+            if (user === 'teamedukasibali' && pass === 'edukasibali123') {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('dashboard-section').classList.remove('hidden');
+                fetchData(); // Ambil data setelah login sukses
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        // Fungsi Logout
+        function logout() {
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            const tabNav = document.getElementById('tab-navigation');
+            if (tabNav) tabNav.classList.add('hidden');
+        }
+
+        // Fungsi Switch Tab
+        function switchTab(tabName) {
+            const tabRingkasan = document.getElementById('tab-ringkasan');
+            const tabPeserta = document.getElementById('tab-peserta');
+            const btnRingkasan = document.getElementById('btn-tab-ringkasan');
+            const btnPeserta = document.getElementById('btn-tab-peserta');
+
+            if (tabName === 'ringkasan') {
+                tabRingkasan.classList.remove('hidden');
+                tabPeserta.classList.add('hidden');
+                btnRingkasan.className = "px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition";
+                btnPeserta.className = "px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition";
+            } else {
+                tabRingkasan.classList.add('hidden');
+                tabPeserta.classList.remove('hidden');
+                btnPeserta.className = "px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition";
+                btnRingkasan.className = "px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition";
+            }
+        }
+
+        // Fungsi Mengambil Data dari Google Sheets
+        function fetchData() {
+            const loading = document.getElementById('loading-indicator');
+            const content = document.getElementById('dashboard-content');
+            const tabNav = document.getElementById('tab-navigation');
+            
+            loading.classList.remove('hidden');
+            content.classList.add('hidden');
+            if (tabNav) tabNav.classList.add('hidden');
+
+            // Menggunakan parameter action=getDashboard dengan mode no-cors dihindari untuk menerima JSON
+            fetch(scriptURL + '?action=getDashboard')
+                .then(response => response.text()) // Ambil teks mentah dulu untuk mengecek error
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+
+                        // Cek jika Apps Script mendeteksi error (misal: nama sheet salah)
+                        if (data.error) {
+                            console.error("Error dari Apps Script:", data.error);
+                            alert("TERJADI KESALAHAN DI DATABASE:\n" + data.error + "\n\nPastikan nama sheet di bawah Google Sheets Anda PERSIS bernama 'Data_Respon' dan 'Link Undangan' tanpa spasi tambahan.");
+                            loading.classList.add('hidden');
+                            return; // Hentikan eksekusi
+                        }
+
+                        // Update Angka Statistik
+                        document.getElementById('stat-total-peserta').innerText = data.total_peserta || 0;
+                        document.getElementById('stat-daftar').innerText = data.sudah_daftar || 0;
+                        document.getElementById('stat-terkirim').innerText = data.undangan_terkirim || 0;
+                        document.getElementById('stat-tidak-hadir').innerText = data.total_tidak_hadir || 0;
+
+                        // Update Tabel Tidak Hadir
+                        const tbody = document.getElementById('tabel-tidak-hadir');
+                        const emptyState = document.getElementById('empty-state');
+                        tbody.innerHTML = '';
+
+                        if (data.list_tidak_hadir && data.list_tidak_hadir.length > 0) {
+                            emptyState.classList.add('hidden');
+                            data.list_tidak_hadir.forEach((item, index) => {
+                                const tr = document.createElement('tr');
+                                tr.className = "hover:bg-gray-50 transition";
+                                tr.innerHTML = `
+                                    <td class="px-6 py-4 text-sm text-gray-500 text-center">${index + 1}</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">${item.nama}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.alasan || '-'}</td>
+                                `;
+                                tbody.appendChild(tr);
+                            });
+                        } else {
+                            emptyState.classList.remove('hidden');
+                        }
+
+                        // Update Tabel Semua Peserta (Sheet1)
+                        const tbodyPeserta = document.getElementById('tabel-semua-peserta');
+                        const emptyStatePeserta = document.getElementById('empty-state-peserta');
+                        if (tbodyPeserta) tbodyPeserta.innerHTML = '';
+
+                        if (data.list_peserta && data.list_peserta.length > 0) {
+                            if (emptyStatePeserta) emptyStatePeserta.classList.add('hidden');
+                            data.list_peserta.forEach((item, index) => {
+                                const tr = document.createElement('tr');
+                                tr.className = "hover:bg-gray-50 transition";
+                                tr.innerHTML = `
+                                    <td class="px-6 py-4 text-sm text-gray-500 text-center">${index + 1}</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">${item.nama}</td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-green-600">${item.status}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.tempat_lahir}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.tanggal_lahir}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.no_wa}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-xs" title="${item.alamat}">${item.alamat}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.area}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">${item.kontak_darurat}</td>
+                                `;
+                                if (tbodyPeserta) tbodyPeserta.appendChild(tr);
+                            });
+                        } else {
+                            if (emptyStatePeserta) emptyStatePeserta.classList.remove('hidden');
+                        }
+
+                        loading.classList.add('hidden');
+                        content.classList.remove('hidden');
+                        if (tabNav) tabNav.classList.remove('hidden');
+
+                    } catch (e) {
+                        // Jika yang dikembalikan Google BUKAN JSON, melainkan halaman login (akses ditolak)
+                        console.error("Format bukan JSON, respons server:", text);
+                        alert("AKSES DITOLAK!\n\nPastikan pengaturan Deployment Google Apps Script bagian 'Who has access' (Siapa yang memiliki akses) disetel ke 'Anyone' (Siapa saja). Bukan 'Anyone with Google Account'.");
+                        loading.classList.add('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Network Error:', error);
+                    alert("Koneksi gagal atau URL Script salah. Periksa console browser.");
+                    loading.classList.add('hidden');
+                });
+        }
+    </script>
+</body>
+</html>
