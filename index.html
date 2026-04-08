@@ -81,9 +81,10 @@
             </div>
 
             <!-- Tab Navigasi -->
-            <div id="tab-navigation" class="hidden flex space-x-2 mb-6 border-b border-gray-200 pb-2">
-                <button onclick="switchTab('ringkasan')" id="btn-tab-ringkasan" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition">Ringkasan Statistik</button>
-                <button onclick="switchTab('peserta')" id="btn-tab-peserta" class="px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition">Data Peserta</button>
+            <div id="tab-navigation" class="hidden flex space-x-2 mb-6 border-b border-gray-200 pb-2 overflow-x-auto">
+                <button onclick="switchTab('ringkasan')" id="btn-tab-ringkasan" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition whitespace-nowrap">Ringkasan Statistik</button>
+                <button onclick="switchTab('peserta')" id="btn-tab-peserta" class="px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition whitespace-nowrap">Data Peserta</button>
+                <button onclick="switchTab('tim')" id="btn-tab-tim" class="px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition whitespace-nowrap">Data Tim</button>
             </div>
 
             <!-- Loading Indicator -->
@@ -151,14 +152,10 @@
                                         <th class="px-6 py-3 font-semibold text-sm">Alasan Tidak Hadir</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabel-tidak-hadir" class="divide-y divide-gray-100">
-                                    <!-- Data otomatis -->
-                                </tbody>
+                                <tbody id="tabel-tidak-hadir" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
-                        <div id="empty-state" class="hidden p-8 text-center text-gray-500">
-                            Belum ada data peserta yang tidak hadir.
-                        </div>
+                        <div id="empty-state" class="hidden p-8 text-center text-gray-500">Belum ada data peserta yang tidak hadir.</div>
                     </div>
 
                     <!-- Tabel Peserta Dengan Riwayat Penyakit -->
@@ -175,22 +172,18 @@
                                         <th class="px-6 py-3 font-semibold text-sm">Riwayat Penyakit</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabel-riwayat-penyakit" class="divide-y divide-gray-100">
-                                    <!-- Data otomatis -->
-                                </tbody>
+                                <tbody id="tabel-riwayat-penyakit" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
-                        <div id="empty-state-penyakit" class="hidden p-8 text-center text-gray-500">
-                            Belum ada data peserta dengan riwayat penyakit.
-                        </div>
+                        <div id="empty-state-penyakit" class="hidden p-8 text-center text-gray-500">Belum ada data peserta dengan riwayat penyakit.</div>
                     </div>
 
-                </div> <!-- Akhir Tab Ringkasan -->
+                </div>
 
                 <!-- TAB DATA PESERTA -->
                 <div id="tab-peserta" class="hidden">
                     <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-                        <div class="bg-green-700 px-6 py-4 flex justify-between items-center">
+                        <div class="bg-green-700 px-6 py-4">
                             <h3 class="text-lg font-bold text-white">Daftar Seluruh Peserta (Pendaftaran Ulang)</h3>
                         </div>
                         <div class="overflow-x-auto">
@@ -202,24 +195,40 @@
                                         <th class="px-6 py-3 font-semibold text-sm">Status</th>
                                         <th class="px-6 py-3 font-semibold text-sm text-orange-600">Riwayat Penyakit</th>
                                         <th class="px-6 py-3 font-semibold text-sm">Jenis Kelamin</th>
-                                        <th class="px-6 py-3 font-semibold text-sm">Tempat Lahir</th>
-                                        <th class="px-6 py-3 font-semibold text-sm">Tanggal Lahir</th>
                                         <th class="px-6 py-3 font-semibold text-sm">No WA</th>
-                                        <th class="px-6 py-3 font-semibold text-sm">Alamat Lengkap</th>
                                         <th class="px-6 py-3 font-semibold text-sm">Area Pelayanan</th>
-                                        <th class="px-6 py-3 font-semibold text-sm">Kontak Darurat</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabel-semua-peserta" class="divide-y divide-gray-100">
-                                    <!-- Data diisi otomatis -->
-                                </tbody>
+                                <tbody id="tabel-semua-peserta" class="divide-y divide-gray-100"></tbody>
                             </table>
                         </div>
-                        <div id="empty-state-peserta" class="hidden p-8 text-center text-gray-500">
-                            Belum ada data pendaftaran masuk.
-                        </div>
+                        <div id="empty-state-peserta" class="hidden p-8 text-center text-gray-500">Belum ada data pendaftaran masuk.</div>
                     </div>
                 </div>
+
+                <!-- TAB DATA TIM -->
+                <div id="tab-tim" class="hidden">
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                        <div class="bg-green-700 px-6 py-4">
+                            <h3 class="text-lg font-bold text-white">Daftar Team Leadership Boot Camp</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse whitespace-nowrap">
+                                <thead>
+                                    <tr class="bg-green-50 text-green-900 border-b border-green-200">
+                                        <th class="px-6 py-3 font-semibold text-sm text-center">No</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Nama</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Fungsi</th>
+                                        <th class="px-6 py-3 font-semibold text-sm">Tugas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-tim" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                        <div id="empty-state-tim" class="hidden p-8 text-center text-gray-500">Belum ada data team di database.</div>
+                    </div>
+                </div>
+
             </div>
             
             <div class="text-center text-gray-400 text-sm mt-8">
@@ -245,32 +254,23 @@
         }
 
         function logout() {
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('login-error').classList.add('hidden');
             document.getElementById('dashboard-section').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
-            const tabNav = document.getElementById('tab-navigation');
-            if (tabNav) tabNav.classList.add('hidden');
         }
 
         function switchTab(tabName) {
-            const tabRingkasan = document.getElementById('tab-ringkasan');
-            const tabPeserta = document.getElementById('tab-peserta');
-            const btnRingkasan = document.getElementById('btn-tab-ringkasan');
-            const btnPeserta = document.getElementById('btn-tab-peserta');
-
-            if (tabName === 'ringkasan') {
-                tabRingkasan.classList.remove('hidden');
-                tabPeserta.classList.add('hidden');
-                btnRingkasan.className = "px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition";
-                btnPeserta.className = "px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition";
-            } else {
-                tabRingkasan.classList.add('hidden');
-                tabPeserta.classList.remove('hidden');
-                btnPeserta.className = "px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition";
-                btnRingkasan.className = "px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition";
-            }
+            const tabs = ['ringkasan', 'peserta', 'tim'];
+            tabs.forEach(t => {
+                const content = document.getElementById('tab-' + t);
+                const btn = document.getElementById('btn-tab-' + t);
+                if (t === tabName) {
+                    content.classList.remove('hidden');
+                    btn.className = "px-6 py-2 bg-green-600 text-white font-semibold rounded-t-lg transition whitespace-nowrap";
+                } else {
+                    content.classList.add('hidden');
+                    btn.className = "px-6 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 font-semibold rounded-t-lg transition whitespace-nowrap";
+                }
+            });
         }
 
         function fetchData() {
@@ -280,14 +280,13 @@
             
             loading.classList.remove('hidden');
             content.classList.add('hidden');
-            if (tabNav) tabNav.classList.add('hidden');
+            tabNav.classList.add('hidden');
 
             fetch(scriptURL + '?action=getDashboard')
                 .then(response => response.json()) 
                 .then(data => {
                     if (data.error) {
-                        alert("Error Database: " + data.error);
-                        loading.classList.add('hidden');
+                        alert("Error: " + data.error);
                         return;
                     }
 
@@ -305,85 +304,66 @@
                     document.getElementById('stat-tidak-hadir-l').innerText = data.tidak_hadir_l || 0;
                     document.getElementById('stat-tidak-hadir-p').innerText = data.tidak_hadir_p || 0;
 
-                    // Tabel Tidak Hadir
+                    // Tabel Peserta Tidak Hadir
                     const tbodyTidakHadir = document.getElementById('tabel-tidak-hadir');
-                    const emptyTidakHadir = document.getElementById('empty-state');
                     tbodyTidakHadir.innerHTML = '';
                     if (data.list_tidak_hadir && data.list_tidak_hadir.length > 0) {
-                        emptyTidakHadir.classList.add('hidden');
+                        document.getElementById('empty-state').classList.add('hidden');
                         data.list_tidak_hadir.forEach((item, index) => {
-                            const tr = document.createElement('tr');
-                            tr.className = "hover:bg-gray-50 transition";
-                            tr.innerHTML = `
-                                <td class="px-6 py-4 text-sm text-gray-500 text-center">${index + 1}</td>
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-800">${item.nama}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">${item.alasan || '-'}</td>
-                            `;
-                            tbodyTidakHadir.appendChild(tr);
+                            tbodyTidakHadir.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4 text-center">${index+1}</td><td class="px-6 py-4 font-semibold">${item.nama}</td><td class="px-6 py-4">${item.alasan}</td></tr>`;
                         });
                     } else {
-                        emptyTidakHadir.classList.remove('hidden');
+                        document.getElementById('empty-state').classList.remove('hidden');
                     }
 
-                    // Tabel Riwayat Penyakit (Filter Otomatis)
+                    // Tabel Riwayat Penyakit & Tabel Semua Peserta
                     const tbodyPenyakit = document.getElementById('tabel-riwayat-penyakit');
-                    const emptyPenyakit = document.getElementById('empty-state-penyakit');
+                    const tbodySemua = document.getElementById('tabel-semua-peserta');
                     tbodyPenyakit.innerHTML = '';
+                    tbodySemua.innerHTML = '';
                     let penyakitCount = 0;
 
                     if (data.list_peserta && data.list_peserta.length > 0) {
-                        data.list_peserta.forEach((item) => {
-                            const r_penyakit = item.riwayat_penyakit || "";
-                            if (r_penyakit.trim() !== "" && r_penyakit.trim() !== "-") {
-                                penyakitCount++;
-                                const tr = document.createElement('tr');
-                                tr.className = "hover:bg-gray-50 transition";
-                                tr.innerHTML = `
-                                    <td class="px-6 py-4 text-sm text-gray-500 text-center">${penyakitCount}</td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">${item.nama || '-'}</td>
-                                    <td class="px-6 py-4 text-sm text-orange-600 font-medium">${r_penyakit}</td>
-                                `;
-                                tbodyPenyakit.appendChild(tr);
-                            }
-                        });
-                    }
-                    if (penyakitCount === 0) emptyPenyakit.classList.remove('hidden');
-                    else emptyPenyakit.classList.add('hidden');
-
-                    // Tabel Semua Peserta
-                    const tbodySemua = document.getElementById('tabel-semua-peserta');
-                    const emptySemua = document.getElementById('empty-state-peserta');
-                    tbodySemua.innerHTML = '';
-                    if (data.list_peserta && data.list_peserta.length > 0) {
-                        emptySemua.classList.add('hidden');
+                        document.getElementById('empty-state-peserta').classList.add('hidden');
                         data.list_peserta.forEach((item, index) => {
-                            const tr = document.createElement('tr');
-                            tr.className = "hover:bg-gray-50 transition";
-                            tr.innerHTML = `
-                                <td class="px-6 py-4 text-sm text-gray-500 text-center">${index + 1}</td>
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-800">${item.nama || '-'}</td>
-                                <td class="px-6 py-4 text-sm font-semibold text-green-600">${item.status || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-orange-600 font-medium italic">${item.riwayat_penyakit || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800 font-medium">${item.jenis_kelamin || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">${item.tempat_lahir || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">${item.tanggal_lahir || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">${item.no_wa || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-xs" title="${item.alamat}">${item.alamat || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">${item.area || '-'}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">${item.kontak_darurat || '-'}</td>
-                            `;
-                            tbodySemua.appendChild(tr);
+                            const hasPenyakit = item.riwayat_penyakit && item.riwayat_penyakit.trim() !== "" && item.riwayat_penyakit !== "-";
+                            if (hasPenyakit) {
+                                penyakitCount++;
+                                tbodyPenyakit.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4 text-center">${penyakitCount}</td><td class="px-6 py-4 font-semibold">${item.nama}</td><td class="px-6 py-4 text-orange-600 font-medium">${item.riwayat_penyakit}</td></tr>`;
+                            }
+                            tbodySemua.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4 text-center">${index+1}</td><td class="px-6 py-4 font-semibold">${item.nama}</td><td class="px-6 py-4 text-green-600 font-bold">${item.status}</td><td class="px-6 py-4 text-orange-600">${item.riwayat_penyakit || '-'}</td><td class="px-6 py-4">${item.jenis_kelamin}</td><td class="px-6 py-4">${item.no_wa}</td><td class="px-6 py-4">${item.area}</td></tr>`;
                         });
                     } else {
-                        emptySemua.classList.remove('hidden');
+                        document.getElementById('empty-state-peserta').classList.remove('hidden');
+                    }
+                    if (penyakitCount === 0) document.getElementById('empty-state-penyakit').classList.remove('hidden');
+                    else document.getElementById('empty-state-penyakit').classList.add('hidden');
+
+                    // TABEL TIM
+                    const tbodyTim = document.getElementById('tabel-tim');
+                    tbodyTim.innerHTML = '';
+                    if (data.list_tim && data.list_tim.length > 0) {
+                        document.getElementById('empty-state-tim').classList.add('hidden');
+                        data.list_tim.forEach((item, index) => {
+                            // Menghapus kolom No WA dan menyesuaikan label display
+                            tbodyTim.innerHTML += `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-center">${index+1}</td>
+                                    <td class="px-6 py-4 font-semibold text-green-900">${item.nama}</td>
+                                    <td class="px-6 py-4 font-medium text-gray-700">${item.jabatan}</td>
+                                    <td class="px-6 py-4">${item.area}</td>
+                                </tr>`;
+                        });
+                    } else {
+                        document.getElementById('empty-state-tim').classList.remove('hidden');
                     }
 
                     loading.classList.add('hidden');
                     content.classList.remove('hidden');
                     tabNav.classList.remove('hidden');
                 })
-                .catch(error => {
-                    console.error('Fetch Error:', error);
+                .catch(err => {
+                    console.error(err);
                     loading.classList.add('hidden');
                 });
         }
