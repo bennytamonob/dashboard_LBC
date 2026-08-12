@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     
     <style>
         body {
@@ -49,13 +50,11 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden-view { display: none !important; }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         ::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.5); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.8); }
 
-        /* Table Styles */
         table { border-collapse: collapse; width: 100%; }
         th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
         th { background: rgba(0,0,0,0.4); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; color: #fbbf24; }
@@ -185,6 +184,10 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     Jadwal Kelas
                 </button>
+                <button onclick="nav('absen')" id="nav-absen" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-white hover:bg-opacity-10 transition-colors text-gray-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                    Absensi Kelas
+                </button>
                 <button onclick="nav('setting')" id="nav-setting" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-white hover:bg-opacity-10 transition-colors text-gray-300">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     Settings
@@ -215,6 +218,7 @@
                 <button onclick="nav('dashboard'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full py-3 text-left border-b border-gray-700 text-amber-400 font-semibold">Dashboard</button>
                 <button onclick="nav('data'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold">Data Peserta</button>
                 <button onclick="nav('jadwal'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold">Jadwal Kelas</button>
+                <button onclick="nav('absen'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold">Absensi Kelas</button>
                 <button onclick="nav('setting'); document.getElementById('mobile-menu').classList.add('hidden')" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold">Settings</button>
                 <button onclick="logout()" class="w-full py-3 text-left text-red-400 font-semibold">Logout</button>
             </div>
@@ -338,8 +342,99 @@
                 </div>
                 
                 <div class="glass-card p-6 rounded-2xl">
-                    <div id="jadwal-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div id="jadwal-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         <div class="text-center col-span-full py-8 text-gray-400">Memuat Jadwal...</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-absen" class="animate-fade-in space-y-6 hidden-view">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <h2 class="text-2xl font-bold text-white">Absensi Kelas SPK</h2>
+                </div>
+
+                <!-- Sub Menu / Tabs -->
+                <div class="flex gap-2 bg-gray-900 bg-opacity-60 p-1 rounded-xl w-max border border-gray-700 shadow-inner">
+                    <button id="tab-btn-input" onclick="switchAbsenTab('input')" class="px-5 py-2.5 bg-amber-500 text-gray-900 rounded-lg font-bold text-sm shadow-md transition-all">
+                        Input Absen
+                    </button>
+                    <button id="tab-btn-rekap" onclick="switchAbsenTab('rekap')" class="px-5 py-2.5 text-gray-400 hover:text-white rounded-lg font-semibold text-sm transition-all hover:bg-white hover:bg-opacity-5">
+                        Rekap Absensi
+                    </button>
+                </div>
+                
+                <!-- TAB INPUT ABSEN -->
+                <div id="absen-tab-input" class="glass-card rounded-2xl overflow-hidden animate-fade-in">
+                    <div class="p-5 border-b border-gray-700 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-black bg-opacity-30">
+                        <div class="flex flex-col md:flex-row gap-3 w-full lg:w-auto">
+                            <select id="absen-jadwal-select" onchange="fetchAbsensi()" class="form-select px-4 py-2.5 rounded-lg text-sm w-full md:w-64 border-amber-500 border focus:border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.15)] font-semibold text-amber-50">
+                                <option value="">-- Pilih Jadwal Kelas --</option>
+                            </select>
+                            <select id="filter-absen-fungsi" onchange="renderAbsensiTable()" class="form-select px-4 py-2.5 rounded-lg text-sm bg-gray-800 border-gray-600">
+                                <option value="Semua">Semua Fungsi</option>
+                                <option value="Peserta">Hanya Peserta</option>
+                                <option value="Pembina">Hanya Pembina</option>
+                            </select>
+                            <input type="text" id="search-absen" placeholder="Cari nama..." onkeyup="renderAbsensiTable()" class="form-input px-4 py-2.5 rounded-lg text-sm w-full md:w-48 bg-gray-800 border-gray-600">
+                        </div>
+                        <div class="flex gap-4 items-center w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 border-gray-700 pt-4 lg:pt-0">
+                            <div class="text-sm text-gray-400 font-medium whitespace-nowrap">
+                                Hadir: <span id="absen-total-hadir" class="text-emerald-400 font-bold text-xl ml-1">0</span>
+                            </div>
+                            <button onclick="saveAbsensi()" id="btn-save-absen" class="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 font-bold flex items-center justify-center gap-2 text-sm whitespace-nowrap shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Simpan Absen
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto w-full max-h-[60vh]">
+                        <table id="absen-table" class="min-w-max w-full text-sm">
+                            <thead class="sticky top-0 z-10 bg-gray-900 shadow-md border-b border-gray-700">
+                                <tr>
+                                    <th class="w-16 text-center">No</th>
+                                    <th class="w-24 text-center text-emerald-400 font-bold">Hadir</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>Panggilan</th>
+                                    <th>Fungsi</th>
+                                    <th>Area Ibadah</th>
+                                </tr>
+                            </thead>
+                            <tbody id="absen-table-body">
+                                <tr><td colspan="6" class="text-center text-gray-400 py-12 flex flex-col items-center justify-center gap-3"><svg class="w-12 h-12 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span>Pilih jadwal kelas terlebih dahulu</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB REKAP ABSENSI -->
+                <div id="absen-tab-rekap" class="glass-card rounded-2xl overflow-hidden hidden-view animate-fade-in">
+                    <div class="p-5 border-b border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-black bg-opacity-30">
+                        <div class="flex gap-3 w-full md:w-auto">
+                            <input type="text" id="search-rekap" placeholder="Cari nama..." onkeyup="renderRekapTable()" class="form-input px-4 py-2 rounded-lg text-sm w-full md:w-48 bg-gray-800 border-gray-600">
+                            <select id="filter-rekap-fungsi" onchange="renderRekapTable()" class="form-select px-4 py-2 rounded-lg text-sm bg-gray-800 border-gray-600">
+                                <option value="Semua">Semua Fungsi</option>
+                                <option value="Peserta">Peserta</option>
+                                <option value="Pembina">Pembina</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button onclick="downloadRekapExcel()" class="px-4 py-2 bg-green-600 text-white hover:bg-green-500 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 w-full md:w-auto shadow-md transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Download Excel
+                            </button>
+                            <button onclick="fetchRekapAbsensi()" class="px-4 py-2 bg-gray-800 text-amber-400 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 w-full md:w-auto">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Muat Ulang
+                            </button>
+                        </div>
+                    </div>
+                    <div id="print-area-rekap" class="overflow-x-auto w-full max-h-[60vh] bg-gray-900">
+                        <table class="min-w-max w-full text-sm">
+                            <thead id="rekap-table-head" class="sticky top-0 z-10 bg-gray-900 shadow-md border-b border-gray-700">
+                                <!-- Generated dynamically -->
+                            </thead>
+                            <tbody id="rekap-table-body">
+                                <tr><td class="text-center py-8 text-gray-400">Klik 'Muat Ulang Rekap' untuk mengambil data...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -355,7 +450,8 @@
                     </h3>
                     <div class="flex flex-col gap-2">
                         <label class="block text-xs text-gray-400">URL Database Google Apps Script</label>
-                        <input type="text" id="setting-db-url" class="form-input w-full px-4 py-2 rounded-lg font-mono text-sm" onchange="updateDbUrl(this.value)">
+                        <input type="text" id="setting-db-url" class="form-input w-full px-4 py-2 rounded-lg font-mono text-sm text-gray-500" disabled title="URL diatur otomatis oleh sistem Google Apps Script">
+                        <p class="text-xs text-emerald-400 mt-1">*URL otomatis terhubung karena dihosting langsung di Apps Script.</p>
                     </div>
                 </div>
 
@@ -423,24 +519,26 @@
     </div>
 
     <script>
+        // Deteksi URL Otomatis dari Google Apps Script
+        let dynamicUrl = '<?= scriptUrl ?>';
+        // Fallback aman untuk preview lokal (Ganti jika perlu)
+        if (dynamicUrl.includes('?=')) dynamicUrl = 'https://script.google.com/macros/s/AKfycbwHqIDSGSu3hj57tnE5FB-L9Q4Ibx3LwADc4GuCbfjXqO7E1tcOZbmyeWoqj86OXYbPwg/exec'; 
+
         // State Management
         let APP_STATE = {
-            dbUrl: localStorage.getItem('spk_db_url') || 'https://script.google.com/macros/s/AKfycbwHqIDSGSu3hj57tnE5FB-L9Q4Ibx3LwADc4GuCbfjXqO7E1tcOZbmyeWoqj86OXYbPwg/exec',
+            dbUrl: dynamicUrl,
             isLoggedIn: false,
             currentUser: null,
-            rawParticipantsData: [], // Store raw data for editing
+            rawParticipantsData: [], 
             rawScheduleData: [],
+            currentAbsenData: new Set(), 
+            rekapAbsenData: {}, 
             chartInstance: null
         };
 
         // DOM Elements
         const modal = document.getElementById('custom-modal');
         const editModal = document.getElementById('edit-modal');
-        
-        function updateDbUrl(val) {
-            APP_STATE.dbUrl = val;
-            localStorage.setItem('spk_db_url', val);
-        }
 
         function showModal(title, message, isError = false, actionsHtml = null) {
             document.getElementById('modal-title').innerText = title;
@@ -466,9 +564,9 @@
         function nav(tab) {
             if(!APP_STATE.isLoggedIn) return;
             
-            // Reset styles
-            ['dashboard', 'data', 'jadwal', 'setting'].forEach(t => {
-                document.getElementById(`section-${t}`).classList.add('hidden-view');
+            ['dashboard', 'data', 'jadwal', 'absen', 'setting'].forEach(t => {
+                const sec = document.getElementById(`section-${t}`);
+                if(sec) sec.classList.add('hidden-view');
                 const btn = document.getElementById(`nav-${t}`);
                 if(btn) {
                     btn.classList.remove('text-amber-400', 'bg-white', 'bg-opacity-5');
@@ -476,18 +574,18 @@
                 }
             });
 
-            // Set active
-            document.getElementById(`section-${tab}`).classList.remove('hidden-view');
+            const activeSec = document.getElementById(`section-${tab}`);
+            if(activeSec) activeSec.classList.remove('hidden-view');
             const activeBtn = document.getElementById(`nav-${tab}`);
             if(activeBtn) {
                 activeBtn.classList.remove('text-gray-300');
                 activeBtn.classList.add('text-amber-400', 'bg-white', 'bg-opacity-5');
             }
 
-            // Load data based on tab
             if(tab === 'dashboard') fetchDashboardStats();
             if(tab === 'data') { if(APP_STATE.rawParticipantsData.length === 0) fetchParticipants(); }
             if(tab === 'jadwal') fetchSchedule();
+            if(tab === 'absen') prepareAbsenTab();
             if(tab === 'setting') fetchSettings();
         }
 
@@ -501,7 +599,6 @@
             btn.disabled = true;
 
             try {
-                // Gunakan POST untuk keamanan agar parameter tidak terlihat di URL
                 const params = new URLSearchParams();
                 params.append('action', 'adminLogin');
                 params.append('username', u);
@@ -521,8 +618,7 @@
                     showModal("Login Gagal", result.message || "Username atau password salah.", true);
                 }
             } catch (err) {
-                console.error(err);
-                showModal("Koneksi Error", "Pastikan URL Database Google Apps Script sudah benar, di-Deploy sebagai Web App, dan di-set akses ke 'Anyone'.", true);
+                showModal("Koneksi Error", "Gagal menghubungi database Google Apps Script.", true);
             } finally {
                 btn.innerHTML = `Masuk Sistem`;
                 btn.disabled = false;
@@ -534,20 +630,18 @@
             APP_STATE.currentUser = null;
             document.getElementById('app-layout').classList.add('hidden-view');
             document.getElementById('view-login').classList.remove('hidden-view');
-            
-            // Clear inputs
             document.getElementById('login-password').value = '';
         }
 
         async function fetchDashboardStats() {
             try {
-                const res = await fetch(`${APP_STATE.dbUrl}?action=getDashboardStats&t=${Date.now()}`);
+                const cb = new Date().getTime(); // Cache Buster
+                const res = await fetch(`${APP_STATE.dbUrl}?action=getDashboardStats&cb=${cb}`);
                 const data = await res.json();
                 
                 if (data.status === 'success') {
                     const stats = data.data;
                     
-                    // Animasi Counter Total & Update L/P
                     animateValue("stat-peserta", stats.peserta.total);
                     document.getElementById("stat-peserta-l").innerText = stats.peserta.L;
                     document.getElementById("stat-peserta-p").innerText = stats.peserta.P;
@@ -587,12 +681,8 @@
 
         function renderChart(labels, data) {
             const ctx = document.getElementById('historyChart').getContext('2d');
-            
-            if (APP_STATE.chartInstance) {
-                APP_STATE.chartInstance.destroy();
-            }
+            if (APP_STATE.chartInstance) APP_STATE.chartInstance.destroy();
 
-            // Jika kosong, beri dummy data
             if(labels.length === 0) {
                 labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
                 data = [0,0,0,0,0,0,0];
@@ -615,8 +705,7 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
                         y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#9ca3af', stepSize: 1 } },
@@ -631,17 +720,18 @@
             tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8"><div class="loader mb-2"></div><br>Mengambil data dari server...</td></tr>`;
             
             try {
-                const res = await fetch(`${APP_STATE.dbUrl}?action=getParticipants&t=${Date.now()}`);
+                const cb = new Date().getTime(); // Cache Buster
+                const res = await fetch(`${APP_STATE.dbUrl}?action=getParticipants&cb=${cb}`);
                 const result = await res.json();
                 
                 if (result.status === 'success') {
-                    APP_STATE.rawParticipantsData = result.data; // Simpan ke state
+                    APP_STATE.rawParticipantsData = result.data; 
                     renderTable(APP_STATE.rawParticipantsData);
                 } else {
                     tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-red-400">Gagal memuat data: ${result.message}</td></tr>`;
                 }
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-red-400">Terjadi kesalahan koneksi.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-red-400">Terjadi kesalahan koneksi ke server.</td></tr>`;
             }
         }
 
@@ -654,18 +744,11 @@
                 return;
             }
 
-            // Urutkan dari yang terbaru (asumsi baris terbesar adalah terbaru)
             const sortedData = [...dataArray].reverse();
 
             sortedData.forEach((row, i) => {
-                // row format mapping (berdasarkan tutorial GAS sebelumnya):
-                // row[0] = row index database, row[1] = Timestamp, row[2] = Nama, row[3] = Panggilan, row[4] = Tempat Lahir, row[5] = Tgl Lahir
-                // row[6] = Gender, row[7] = Fungsi, row[8] = Area, row[9] = WA, row[10] = Email, row[11] = Baptis, row[12] = PKS
-                
                 const tglDaftar = new Date(row[1]).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
                 const rowId = row[0];
-                
-                // Mencegah error jika data WA adalah Number di Google Sheets
                 const safeWaNumber = String(row[9] || '').replace(/^0/, '62');
 
                 const tr = document.createElement('tr');
@@ -696,7 +779,6 @@
         }
 
         function openEditModal(rowId) {
-            // Find row data
             const rowData = APP_STATE.rawParticipantsData.find(r => r[0] == rowId);
             if(!rowData) return;
 
@@ -704,7 +786,6 @@
             document.getElementById('edit-nama').value = rowData[2];
             document.getElementById('edit-panggilan').value = rowData[3];
             
-            // Format tgl untuk input date (YYYY-MM-DD)
             try {
                 const rawDate = new Date(rowData[5]);
                 document.getElementById('edit-tgl').value = rawDate.toISOString().split('T')[0];
@@ -758,11 +839,16 @@
 
         async function fetchSchedule() {
             try {
-                const res = await fetch(`${APP_STATE.dbUrl}?action=getSchedule&t=${Date.now()}`);
+                const cb = new Date().getTime(); // Cache buster
+                const url = `${APP_STATE.dbUrl}?action=getSchedule&cb=${cb}`;
+                const res = await fetch(url);
                 const data = await res.json();
                 if(data.status === 'success') {
                     APP_STATE.rawScheduleData = data.data;
                     renderScheduleCards();
+                    
+                    // Update Dropdown di Tab Absensi Jika Sedang Terbuka
+                    populateAbsenScheduleDropdown();
                 }
             } catch(e) { console.error(e); }
         }
@@ -772,43 +858,399 @@
             container.innerHTML = '';
             
             if(APP_STATE.rawScheduleData.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center text-gray-400">Jadwal belum dikonfigurasi. Silakan tambah di menu Settings.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10">Jadwal belum dikonfigurasi. Silakan tambah di menu Settings.</div>`;
                 return;
             }
 
             APP_STATE.rawScheduleData.forEach((item, index) => {
-                // item: [Tanggal, Topik, Pembicara, Keterangan]
+                // Format Array: [Kelas (Materi), Tanggal, Pembicara]
+                const namaKelas = item[0] || '-';
+                const tanggalRaw = item[1];
+                const namaPembicara = item[2] || '-';
+                
+                // Coba memformat tanggal (agar kode 2026-08-15T... hilang). Jika gagal, tampilkan raw-nya.
+                let tanggalCantik = tanggalRaw;
+                if(tanggalRaw) {
+                    try {
+                        const dateObj = new Date(tanggalRaw);
+                        if(!isNaN(dateObj)) {
+                            // Cek jika formatnya "3 & 4 oktober" (tidak valid untuk date parser)
+                            tanggalCantik = dateObj.toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'});
+                        }
+                    } catch(e) {}
+                }
+
                 container.innerHTML += `
-                    <div class="bg-gray-800 bg-opacity-50 p-4 rounded-xl border border-gray-700 hover:border-amber-500 transition-colors">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="px-2 py-1 bg-amber-500 text-gray-900 text-xs font-bold rounded">Sesi ${index + 1}</span>
-                            <span class="text-xs text-gray-400 font-mono">${item[0]}</span>
+                    <div class="bg-gray-800 bg-opacity-40 p-5 rounded-2xl border border-gray-700 hover:border-amber-500 hover:shadow-[0_0_20px_rgba(251,191,36,0.15)] transition-all flex flex-col relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-amber-500 bg-opacity-10 rounded-bl-full -z-10 group-hover:bg-opacity-20 transition-all"></div>
+                        <h4 class="text-lg font-black text-amber-400 mb-4 flex items-start gap-3 leading-tight">
+                            <span class="bg-amber-500 text-gray-900 px-2 py-0.5 rounded text-xs mt-0.5 whitespace-nowrap uppercase tracking-wider font-bold">Kelas</span>
+                            <span>${namaKelas}</span>
+                        </h4>
+                        
+                        <div class="space-y-3 flex-1 border-t border-gray-700 pt-4 mt-2">
+                            <div class="flex items-start gap-2">
+                                <span class="text-gray-500 font-semibold text-xs uppercase tracking-wider w-24 flex-shrink-0 pt-0.5">Tanggal</span>
+                                <span class="text-gray-300 font-medium">${tanggalCantik}</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-gray-500 font-semibold text-xs uppercase tracking-wider w-24 flex-shrink-0 pt-0.5">Pembicara</span>
+                                <span class="text-amber-100 font-medium">${namaPembicara}</span>
+                            </div>
                         </div>
-                        <h4 class="text-lg font-bold text-white leading-tight mb-1">${item[1] || 'Topik Belum Ditentukan'}</h4>
-                        <p class="text-sm text-amber-400 mb-3"><span class="text-gray-400">Oleh:</span> ${item[2] || '-'}</p>
-                        ${item[3] ? `<p class="text-xs text-gray-400 bg-black bg-opacity-30 p-2 rounded">${item[3]}</p>` : ''}
                     </div>
                 `;
             });
         }
 
+        async function prepareAbsenTab() {
+            // Pastikan data peserta & jadwal sudah ter-load sebelum buka tab absen
+            if(APP_STATE.rawParticipantsData.length === 0) await fetchParticipants();
+            if(APP_STATE.rawScheduleData.length === 0) await fetchSchedule();
+            populateAbsenScheduleDropdown();
+        }
+
+        function populateAbsenScheduleDropdown() {
+            const select = document.getElementById('absen-jadwal-select');
+            const currentVal = select.value;
+            
+            let optionsHTML = `<option value="">-- Pilih Jadwal Kelas --</option>`;
+            APP_STATE.rawScheduleData.forEach((jdwl, i) => {
+                // Format: [Kelas (Materi), Tanggal, Pembicara]
+                const namaKelas = jdwl[0] || 'Tanpa Judul';
+                
+                // Format tanggal cantik
+                let tgl = jdwl[1] || '';
+                try {
+                     const d = new Date(tgl);
+                     if(!isNaN(d)) tgl = d.toLocaleDateString('id-ID', {day:'numeric', month:'short'});
+                } catch(e){}
+
+                const text = `${namaKelas} (${tgl})`;
+                const val = namaKelas; // Gunakan Nama Kelas sebagai Key Absensi
+                optionsHTML += `<option value="${val}">${text}</option>`;
+            });
+            select.innerHTML = optionsHTML;
+            if(currentVal) select.value = currentVal; // Maintain selection if any
+        }
+
+        function switchAbsenTab(tab) {
+            const btnInput = document.getElementById('tab-btn-input');
+            const btnRekap = document.getElementById('tab-btn-rekap');
+            const viewInput = document.getElementById('absen-tab-input');
+            const viewRekap = document.getElementById('absen-tab-rekap');
+
+            if(tab === 'input') {
+                btnInput.className = "px-5 py-2.5 bg-amber-500 text-gray-900 rounded-lg font-bold text-sm shadow-md transition-all";
+                btnRekap.className = "px-5 py-2.5 text-gray-400 hover:text-white rounded-lg font-semibold text-sm transition-all hover:bg-white hover:bg-opacity-5";
+                viewInput.classList.remove('hidden-view');
+                viewRekap.classList.add('hidden-view');
+            } else {
+                btnRekap.className = "px-5 py-2.5 bg-amber-500 text-gray-900 rounded-lg font-bold text-sm shadow-md transition-all";
+                btnInput.className = "px-5 py-2.5 text-gray-400 hover:text-white rounded-lg font-semibold text-sm transition-all hover:bg-white hover:bg-opacity-5";
+                viewRekap.classList.remove('hidden-view');
+                viewInput.classList.add('hidden-view');
+                
+                if(Object.keys(APP_STATE.rekapAbsenData).length === 0) {
+                    fetchRekapAbsensi();
+                }
+            }
+        }
+
+        async function fetchRekapAbsensi() {
+            const tbody = document.getElementById('rekap-table-body');
+            tbody.innerHTML = `<tr><td class="text-center py-12 text-gray-400"><div class="loader mb-3"></div><br>Menarik seluruh rekap absensi dari database...</td></tr>`;
+            
+            try {
+                const cb = new Date().getTime(); // Cache buster
+                const res = await fetch(`${APP_STATE.dbUrl}?action=getAllAttendance&cb=${cb}`);
+                const result = await res.json();
+                
+                if(result.status === 'success') {
+                    APP_STATE.rekapAbsenData = result.data; // { "Kelas 1 (16-Aug)": [id1, id2] }
+                    renderRekapTable();
+                } else {
+                    tbody.innerHTML = `<tr><td class="text-center py-8 text-red-400">Gagal memuat rekap.</td></tr>`;
+                }
+            } catch(e) {
+                tbody.innerHTML = `<tr><td class="text-center py-8 text-red-400">Gagal terhubung ke database.</td></tr>`;
+            }
+        }
+
+        function renderRekapTable() {
+            const thead = document.getElementById('rekap-table-head');
+            const tbody = document.getElementById('rekap-table-body');
+            
+            if(APP_STATE.rawParticipantsData.length === 0 || APP_STATE.rawScheduleData.length === 0) {
+                tbody.innerHTML = `<tr><td class="text-center py-8 text-gray-400">Data peserta atau jadwal belum dimuat. Silakan tunggu.</td></tr>`;
+                return;
+            }
+
+            // Build Header
+            let headHTML = `
+                <tr>
+                    <th class="w-12 text-center p-3 text-amber-400 bg-gray-800">NO</th>
+                    <th class="p-3 text-amber-400 bg-gray-800 border-l border-gray-700">NAMA LENGKAP</th>
+                    <th class="p-3 text-amber-400 bg-gray-800 border-l border-gray-700">FUNGSI</th>
+            `;
+            APP_STATE.rawScheduleData.forEach((jadwal, i) => {
+                // jadwal[0] mengambil Teks dari Kolom A di Spreadsheet.
+                // Jika Anda ingin header-nya "KESELAMATAN", ketik "KESELAMATAN" di Kolom A Spreadsheet Anda.
+                const namaTopik = jadwal[0] || `Sesi ${i+1}`;
+                
+                let tgl = jadwal[1] || '';
+                try {
+                     const d = new Date(tgl);
+                     if(!isNaN(d)) tgl = d.toLocaleDateString('id-ID', {day:'numeric', month:'short'});
+                } catch(e){}
+
+                headHTML += `<th class="text-center whitespace-nowrap p-3 border-l border-gray-700 bg-gray-800" title="${namaTopik}"><div class="flex flex-col"><span class="font-bold text-gray-200">${namaTopik}</span><span class="text-[10px] text-gray-400 font-normal mt-0.5">${tgl}</span></div></th>`;
+            });
+            headHTML += `<th class="text-center text-emerald-400 font-bold bg-gray-900 p-3 border-l border-gray-700 shadow-inner">TOTAL</th></tr>`;
+            thead.innerHTML = headHTML;
+
+            // Filter & Sort
+            let dataArr = APP_STATE.rawParticipantsData;
+            const searchQ = document.getElementById('search-rekap').value.toLowerCase();
+            const fungsiF = document.getElementById('filter-rekap-fungsi').value;
+            
+            if(searchQ) dataArr = dataArr.filter(r => r[2].toLowerCase().includes(searchQ) || r[3].toLowerCase().includes(searchQ));
+            if(fungsiF !== "Semua") dataArr = dataArr.filter(r => r[7] === fungsiF);
+            
+            const sortedData = [...dataArr].sort((a,b) => a[2].localeCompare(b[2]));
+
+            tbody.innerHTML = '';
+            if(sortedData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${3 + APP_STATE.rawScheduleData.length + 1}" class="text-center py-8 text-gray-400">Tidak ada data.</td></tr>`;
+                return;
+            }
+
+            sortedData.forEach((row, idx) => {
+                const rowId = row[0];
+                const nama = row[2];
+                const fungsi = row[7];
+                let totalHadir = 0;
+                
+                let trHTML = `
+                    <td class="text-center text-gray-400 p-3 bg-gray-900 border-b border-gray-800">${idx+1}</td>
+                    <td class="font-bold text-white whitespace-nowrap p-3 bg-gray-900 border-l border-b border-gray-800">${nama}</td>
+                    <td class="p-3 bg-gray-900 border-l border-b border-gray-800"><span class="px-2 py-1 rounded text-[10px] ${fungsi === 'Pembina' ? 'bg-amber-500 text-amber-100' : 'bg-blue-500 text-blue-100'} bg-opacity-20 uppercase tracking-wider">${fungsi}</span></td>
+                `;
+
+                APP_STATE.rawScheduleData.forEach(jadwal => {
+                    const namaTopik = jadwal[0] || 'Tanpa Judul';
+                    const jadwalKey = `${namaTopik}`; 
+                    
+                    const presentIds = APP_STATE.rekapAbsenData[jadwalKey] || [];
+                    
+                    if(presentIds.includes(rowId)) {
+                        trHTML += `<td class="text-center p-3 border-l border-b border-gray-800 bg-emerald-900 bg-opacity-10"><div class="w-6 h-6 mx-auto bg-emerald-500 bg-opacity-20 rounded text-emerald-400 flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div></td>`;
+                        totalHadir++;
+                    } else {
+                        trHTML += `<td class="text-center text-gray-700 p-3 border-l border-b border-gray-800 bg-gray-900 bg-opacity-50">-</td>`;
+                    }
+                });
+
+                trHTML += `<td class="text-center font-bold text-emerald-400 bg-gray-900 border-l border-b border-gray-800 shadow-inner p-3">${totalHadir}</td>`;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = trHTML;
+                tr.className = "hover:bg-gray-800 transition-colors";
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function downloadRekapExcel() {
+            showLoadingBox("Menyiapkan file Excel...");
+            setTimeout(() => {
+                try {
+                    let excelData = [];
+                    
+                    // 1. Buat Header Excel
+                    let headers = ["NO", "NAMA LENGKAP", "FUNGSI"];
+                    APP_STATE.rawScheduleData.forEach(jadwal => {
+                        const namaTopik = jadwal[0] || 'Topik';
+                        let tgl = jadwal[1] || '';
+                        try {
+                             const d = new Date(tgl);
+                             if(!isNaN(d)) tgl = d.toLocaleDateString('id-ID', {day:'numeric', month:'short'});
+                        } catch(e){}
+                        headers.push(`${namaTopik} (${tgl})`);
+                    });
+                    headers.push("TOTAL HADIR");
+                    excelData.push(headers);
+
+                    // 2. Filter data sesuai yang tampil di layar
+                    let dataArr = APP_STATE.rawParticipantsData;
+                    const searchQ = document.getElementById('search-rekap').value.toLowerCase();
+                    const fungsiF = document.getElementById('filter-rekap-fungsi').value;
+                    
+                    if(searchQ) dataArr = dataArr.filter(r => r[2].toLowerCase().includes(searchQ) || r[3].toLowerCase().includes(searchQ));
+                    if(fungsiF !== "Semua") dataArr = dataArr.filter(r => r[7] === fungsiF);
+                    
+                    const sortedData = [...dataArr].sort((a,b) => a[2].localeCompare(b[2]));
+
+                    // 3. Masukkan Baris Data ke Excel
+                    sortedData.forEach((row, idx) => {
+                        let rowData = [idx + 1, row[2], row[7]]; // No, Nama, Fungsi
+                        let totalHadir = 0;
+                        
+                        APP_STATE.rawScheduleData.forEach(jadwal => {
+                            const namaTopik = jadwal[0] || 'Tanpa Judul';
+                            const presentIds = APP_STATE.rekapAbsenData[namaTopik] || [];
+                            
+                            // Terjemahkan ID menjadi tulisan "Hadir" atau "-"
+                            if(presentIds.includes(row[0])) {
+                                rowData.push("Hadir");
+                                totalHadir++;
+                            } else {
+                                rowData.push("-");
+                            }
+                        });
+                        rowData.push(totalHadir);
+                        excelData.push(rowData);
+                    });
+
+                    // 4. Generate & Download File Excel menggunakan SheetJS
+                    const ws = XLSX.utils.aoa_to_sheet(excelData);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Rekap Absensi SPK");
+                    
+                    const filename = `Rekap_Absensi_SPK_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.xlsx`;
+                    XLSX.writeFile(wb, filename);
+                    
+                    closeModal();
+                } catch(err) {
+                    closeModal();
+                    showModal("Error", "Gagal membuat file Excel.", true);
+                }
+            }, 500);
+        }
+        
+        async function fetchAbsensi() {
+            const jadwal = document.getElementById('absen-jadwal-select').value;
+            const tbody = document.getElementById('absen-table-body');
+            
+            if(!jadwal) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-400 py-12 flex flex-col items-center justify-center gap-3"><svg class="w-12 h-12 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span>Pilih jadwal kelas terlebih dahulu</span></td></tr>`;
+                document.getElementById('absen-total-hadir').innerText = '0';
+                return;
+            }
+            
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8"><div class="loader mb-2"></div><br>Menarik data kehadiran dari server...</td></tr>`;
+            
+            try {
+                const cb = new Date().getTime(); // Cache Buster
+                const res = await fetch(`${APP_STATE.dbUrl}?action=getAttendance&jadwal=${encodeURIComponent(jadwal)}&cb=${cb}`);
+                const result = await res.json();
+                
+                APP_STATE.currentAbsenData = new Set(result.data || []);
+                renderAbsensiTable();
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-400">Gagal memuat data absensi. Silakan coba lagi.</td></tr>`;
+            }
+        }
+        
+        function renderAbsensiTable() {
+            const tbody = document.getElementById('absen-table-body');
+            const jadwal = document.getElementById('absen-jadwal-select').value;
+            
+            if(!jadwal) return;
+            let dataArr = APP_STATE.rawParticipantsData;
+            
+            const searchQ = document.getElementById('search-absen').value.toLowerCase();
+            if(searchQ) dataArr = dataArr.filter(r => r[2].toLowerCase().includes(searchQ) || r[3].toLowerCase().includes(searchQ));
+            
+            const fungsiF = document.getElementById('filter-absen-fungsi').value;
+            if(fungsiF !== "Semua") dataArr = dataArr.filter(r => r[7] === fungsiF);
+            
+            tbody.innerHTML = '';
+            if (dataArr.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400">Tidak ada data yang cocok dengan pencarian.</td></tr>`;
+                return;
+            }
+            
+            const sortedData = [...dataArr].sort((a,b) => a[2].localeCompare(b[2]));
+            
+            sortedData.forEach((row, i) => {
+                const rowId = row[0];
+                const isChecked = APP_STATE.currentAbsenData.has(rowId) ? 'checked' : '';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-center text-gray-400">${i+1}</td>
+                    <td class="text-center">
+                        <input type="checkbox" onchange="toggleAbsen(${rowId}, this.checked)" class="w-6 h-6 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer transition-all hover:scale-110" ${isChecked}>
+                    </td>
+                    <td class="font-semibold text-white whitespace-nowrap cursor-pointer hover:text-emerald-400 transition-colors" onclick="const cb=this.previousElementSibling.querySelector('input'); cb.checked=!cb.checked; toggleAbsen(${rowId}, cb.checked);">${row[2]}</td>
+                    <td class="text-gray-300">${row[3]}</td>
+                    <td><span class="px-2 py-1 rounded text-xs ${row[7] === 'Pembina' ? 'bg-amber-500 bg-opacity-20 text-amber-400' : 'bg-blue-500 bg-opacity-20 text-blue-400'}">${row[7]}</span></td>
+                    <td class="text-gray-300">${row[8]}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            updateAbsenCounter();
+        }
+        
+        function toggleAbsen(rowId, isHadir) {
+            if(isHadir) APP_STATE.currentAbsenData.add(rowId);
+            else APP_STATE.currentAbsenData.delete(rowId);
+            updateAbsenCounter();
+        }
+        
+        function updateAbsenCounter() {
+            document.getElementById('absen-total-hadir').innerText = APP_STATE.currentAbsenData.size;
+        }
+        
+        async function saveAbsensi() {
+            const jadwal = document.getElementById('absen-jadwal-select').value;
+            if(!jadwal) {
+                showModal("Perhatian", "Silakan pilih jadwal kelas terlebih dahulu.", true);
+                return;
+            }
+            
+            const btn = document.getElementById('btn-save-absen');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<div class="loader w-4 h-4 border-gray-900 border-t-white mr-2"></div> Menyimpan...`;
+            btn.disabled = true;
+            
+            const arrayHadir = Array.from(APP_STATE.currentAbsenData);
+            
+            const params = new URLSearchParams();
+            params.append('action', 'saveAttendance');
+            params.append('jadwal', jadwal);
+            params.append('dataHadir', JSON.stringify(arrayHadir));
+            
+            try {
+                const res = await fetch(APP_STATE.dbUrl, { method: 'POST', body: params });
+                const result = await res.json();
+                if(result.status === 'success') {
+                    showModal("Berhasil", `Data kehadiran untuk kelas <b>${jadwal}</b> berhasil disimpan!`, false);
+                } else {
+                    showModal("Gagal", result.message || "Gagal menyimpan data absensi", true);
+                }
+            } catch(e) {
+                showModal("Error", "Gagal menghubungi server database.", true);
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+
         async function fetchSettings() {
-            // Setup Logo input & DB URL
             const logoEl = document.getElementById('sidebar-logo');
             document.getElementById('setting-logo-url').value = logoEl.src;
             document.getElementById('setting-db-url').value = APP_STATE.dbUrl;
 
-            // Load Accounts & Schedule for Editing
             try {
-                // 1. Fetch Accounts
-                const resAcc = await fetch(`${APP_STATE.dbUrl}?action=getAccounts&t=${Date.now()}`);
+                const cb = new Date().getTime(); // Cache Buster
+                const resAcc = await fetch(`${APP_STATE.dbUrl}?action=getAccounts&cb=${cb}`);
                 const dataAcc = await resAcc.json();
                 const tbody = document.getElementById('accounts-table-body');
                 tbody.innerHTML = '';
                 
                 if(dataAcc.status === 'success') {
                     dataAcc.data.forEach(acc => {
-                        // acc: [rowIndex, username, password]
                         tbody.innerHTML += `
                             <tr>
                                 <td class="font-semibold text-gray-300">${acc[1]}</td>
@@ -820,9 +1262,7 @@
                         `;
                     });
                 }
-
-                // 2. Prepare Schedule editor
-                await fetchSchedule(); // ensures data is loaded
+                await fetchSchedule(); 
                 renderScheduleEditor();
 
             } catch(e) { console.error("Error loading settings"); }
@@ -833,12 +1273,20 @@
             container.innerHTML = '';
             
             APP_STATE.rawScheduleData.forEach((item, idx) => {
+                // Format: [Kelas, Tanggal, Pembicara]
+                // Karena tanggal mentah mungkin ISO format dari Google, ubah sedikit
+                let tglMentah = item[1] || '';
+                try {
+                     const d = new Date(tglMentah);
+                     if(!isNaN(d)) tglMentah = d.toLocaleDateString('id-ID', {day:'numeric', month:'short'});
+                } catch(e){}
+
                 const div = document.createElement('div');
                 div.className = "flex flex-col md:flex-row gap-2 bg-gray-900 bg-opacity-50 p-3 rounded-lg border border-gray-700 schedule-row";
                 div.innerHTML = `
-                    <input type="text" placeholder="Tanggal (Contoh: 12 Ags 2026)" value="${item[0] || ''}" class="form-input flex-1 px-3 py-2 rounded text-sm sched-tgl">
-                    <input type="text" placeholder="Topik Materi" value="${item[1] || ''}" class="form-input flex-2 w-full md:w-1/3 px-3 py-2 rounded text-sm sched-topik">
-                    <input type="text" placeholder="Pembicara" value="${item[2] || ''}" class="form-input flex-1 px-3 py-2 rounded text-sm sched-pembicara">
+                    <input type="text" placeholder="Nama Kelas" value="${item[0] || ''}" class="form-input flex-2 w-full md:w-1/3 px-3 py-2 rounded text-sm sched-topik font-bold text-amber-400">
+                    <input type="text" placeholder="Tanggal" value="${tglMentah}" class="form-input flex-1 px-3 py-2 rounded text-sm sched-tgl text-gray-300">
+                    <input type="text" placeholder="Pembicara" value="${item[2] || ''}" class="form-input flex-1 px-3 py-2 rounded text-sm sched-pembicara text-gray-300">
                     <button onclick="this.parentElement.remove()" class="px-3 py-2 bg-red-900 text-red-300 rounded hover:bg-red-800" title="Hapus Baris"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                 `;
                 container.appendChild(div);
@@ -850,9 +1298,9 @@
             const div = document.createElement('div');
             div.className = "flex flex-col md:flex-row gap-2 bg-gray-900 bg-opacity-50 p-3 rounded-lg border border-gray-700 schedule-row";
             div.innerHTML = `
-                <input type="text" placeholder="Tanggal" class="form-input flex-1 px-3 py-2 rounded text-sm sched-tgl">
-                <input type="text" placeholder="Topik Materi" class="form-input flex-2 w-full md:w-1/3 px-3 py-2 rounded text-sm sched-topik">
-                <input type="text" placeholder="Pembicara" class="form-input flex-1 px-3 py-2 rounded text-sm sched-pembicara">
+                <input type="text" placeholder="Nama Kelas" class="form-input flex-2 w-full md:w-1/3 px-3 py-2 rounded text-sm sched-topik font-bold text-amber-400">
+                <input type="text" placeholder="Tanggal" class="form-input flex-1 px-3 py-2 rounded text-sm sched-tgl text-gray-300">
+                <input type="text" placeholder="Pembicara" class="form-input flex-1 px-3 py-2 rounded text-sm sched-pembicara text-gray-300">
                 <button onclick="this.parentElement.remove()" class="px-3 py-2 bg-red-900 text-red-300 rounded hover:bg-red-800"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
             `;
             container.appendChild(div);
@@ -864,10 +1312,10 @@
             const rows = document.querySelectorAll('.schedule-row');
             let scheduleArray = [];
             rows.forEach(r => {
-                const tgl = r.querySelector('.sched-tgl').value;
-                const topik = r.querySelector('.sched-topik').value;
-                const pembicara = r.querySelector('.sched-pembicara').value;
-                if(tgl || topik) scheduleArray.push([tgl, topik, pembicara]);
+                const topik = r.querySelector('.sched-topik').value; // Posisi ke-1 (Kelas)
+                const tgl = r.querySelector('.sched-tgl').value;     // Posisi ke-2 (Tgl)
+                const pembicara = r.querySelector('.sched-pembicara').value; // Posisi ke-3 (Pembicara)
+                if(topik || tgl) scheduleArray.push([topik, tgl, pembicara]); 
             });
 
             const params = new URLSearchParams();
@@ -901,7 +1349,7 @@
                 await fetch(APP_STATE.dbUrl, { method: 'POST', body: params });
                 document.getElementById('new-acc-user').value = '';
                 document.getElementById('new-acc-pass').value = '';
-                fetchSettings(); // reload table
+                fetchSettings();
             } catch(e) { alert("Error"); }
             btn.innerHTML = 'Tambah Akun'; btn.disabled = false;
         }
@@ -916,7 +1364,7 @@
 
             try {
                 await fetch(APP_STATE.dbUrl, { method: 'POST', body: params });
-                fetchSettings(); // reload table
+                fetchSettings();
             } catch(e) { alert("Error"); }
         }
 
@@ -925,8 +1373,6 @@
             if(!url) return;
             document.getElementById('sidebar-logo').src = url;
             document.getElementById('login-logo').src = url;
-            // Dalam mode produksi, Anda perlu mengirim URL ini via POST ke Apps Script
-            // Namun karena hanya dekoratif untuk dashboard admin lokal, kita bisa menyimpannya sementara.
             showModal("Berhasil", "Pratinjau logo telah diubah (Sistem Cache lokal).", false);
         }
 
