@@ -63,14 +63,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><label class="block text-xs text-gray-400 mb-1">Nama Lengkap</label><input type="text" id="edit-nama" class="form-input w-full px-3 py-2 rounded-lg" required></div>
                     <div><label class="block text-xs text-gray-400 mb-1">Nama Panggilan</label><input type="text" id="edit-panggilan" class="form-input w-full px-3 py-2 rounded-lg" required></div>
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">Fungsi</label>
-                        <select id="edit-fungsi" class="form-select w-full px-3 py-2 rounded-lg" required><option value="Peserta">Peserta</option><option value="Pembina">Pembina</option></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1">Status Baptisan</label>
-                        <select id="edit-baptis" class="form-select w-full px-3 py-2 rounded-lg" required><option value="Belum">Belum</option><option value="Sudah">Sudah</option></select>
-                    </div>
+                    <div><label class="block text-xs text-gray-400 mb-1">Fungsi</label><select id="edit-fungsi" class="form-select w-full px-3 py-2 rounded-lg" required><option value="Peserta">Peserta</option><option value="Pembina">Pembina</option></select></div>
+                    <div><label class="block text-xs text-gray-400 mb-1">Status Baptisan</label><select id="edit-baptis" class="form-select w-full px-3 py-2 rounded-lg" required><option value="Belum">Belum</option><option value="Sudah">Sudah</option></select></div>
                     <div>
                         <label class="block text-xs text-gray-400 mb-1">Area Ibadah</label>
                         <select id="edit-area" class="form-select w-full px-3 py-2 rounded-lg" required>
@@ -109,6 +103,7 @@
                     Masuk Sistem
                 </button>
             </form>
+            <a href="?page=form" class="block text-sm text-gray-500 hover:text-white mt-4 transition-colors">Kembali ke Form Pendaftaran</a>
         </div>
     </main>
 
@@ -325,16 +320,16 @@
             
             btn.innerHTML = `<div class="loader w-5 h-5 border-gray-900 border-t-white"></div>`; btn.disabled = true;
 
-            // Menggunakan perintah bawaan Google yang lebih aman, BUKAN fetch()
+            // Penggunaan google.script.run secara asli (anti error/CORS)
             google.script.run
                 .withSuccessHandler(function(res) {
                     btn.innerHTML = `Masuk Sistem`; btn.disabled = false;
-                    if(res.success) {
+                    if(res && res.success) {
                         APP_STATE.isLoggedIn = true;
                         document.getElementById('view-login').classList.add('hidden-view');
                         document.getElementById('app-layout').classList.remove('hidden-view');
                         nav('dashboard');
-                    } else { showModal("Login Gagal", res.message, true); }
+                    } else { showModal("Login Gagal", res ? res.message : "Tidak diketahui", true); }
                 })
                 .withFailureHandler(function(err) {
                     btn.innerHTML = `Masuk Sistem`; btn.disabled = false;
@@ -630,7 +625,7 @@
         function updateLogo() {
             const url = document.getElementById('setting-logo-url').value; if(!url) return;
             document.getElementById('sidebar-logo').src = url; document.getElementById('login-logo').src = url;
-            showModal("Berhasil", "Pratinjau logo telah diubah (Sistem Cache lokal).", false);
+            showModal("Berhasil", "Pratinjau logo telah diubah.", false);
         }
     </script>
 </body>
