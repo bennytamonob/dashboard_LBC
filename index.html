@@ -111,7 +111,7 @@
 
     <div id="app-layout" class="w-full flex min-h-screen hidden-view">
         
-        <!-- Sidebar Navigation (With Icons) -->
+        <!-- Sidebar Navigation (Desktop) -->
         <aside class="w-64 glass-card border-r border-gray-700 flex flex-col hidden md:flex h-screen sticky top-0">
             <div class="p-6 text-center border-b border-gray-700">
                 <img id="sidebar-logo" src="https://i.ibb.co.com/BKsx9NTP/Logo-SPK-New.png" class="w-16 mx-auto mb-2 drop-shadow-md">
@@ -148,8 +148,43 @@
             </div>
         </aside>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 h-screen overflow-y-auto p-4 md:p-8 w-full">
+        <!-- Mobile Header (Tombol Menu HP) -->
+        <div class="md:hidden fixed top-0 w-full glass-card border-b border-gray-700 p-4 flex justify-between items-center z-30">
+            <div class="flex items-center gap-3">
+                <img src="https://i.ibb.co.com/BKsx9NTP/Logo-SPK-New.png" class="w-8 h-8" id="mobile-logo">
+                <h1 class="font-bold text-amber-400">Admin SPK</h1>
+            </div>
+            <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-white p-2 focus:outline-none hover:text-amber-400 transition-colors">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Navigasi -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 bg-gray-900 bg-opacity-95 z-20 pt-24 px-6 backdrop-blur-sm">
+            <div class="space-y-4">
+                <button onclick="nav('dashboard'); document.getElementById('mobile-menu').classList.add('hidden')" id="mob-nav-dashboard" class="w-full py-3 text-left border-b border-gray-700 text-amber-400 font-semibold flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard
+                </button>
+                <button onclick="nav('data'); document.getElementById('mobile-menu').classList.add('hidden')" id="mob-nav-data" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> Data Peserta
+                </button>
+                <button onclick="nav('jadwal'); document.getElementById('mobile-menu').classList.add('hidden')" id="mob-nav-jadwal" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Jadwal Kelas
+                </button>
+                <button onclick="nav('absen'); document.getElementById('mobile-menu').classList.add('hidden')" id="mob-nav-absen" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> Absensi Kelas
+                </button>
+                <button onclick="nav('setting'); document.getElementById('mobile-menu').classList.add('hidden')" id="mob-nav-setting" class="w-full py-3 text-left border-b border-gray-700 text-white font-semibold flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Settings
+                </button>
+                <button onclick="logout()" class="w-full py-3 text-left text-red-400 font-semibold flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area (Ditambahkan pt-24 khusus HP agar tidak tertutup header) -->
+        <main class="flex-1 h-screen overflow-y-auto p-4 md:p-8 pt-24 md:pt-8 w-full">
             
             <section id="section-dashboard" class="animate-fade-in space-y-6">
                 <div class="flex justify-between items-center">
@@ -275,12 +310,12 @@
                 
                 <div id="absen-tab-input" class="glass-card rounded-2xl overflow-hidden animate-fade-in">
                     <div class="p-5 border-b border-gray-700 flex flex-col md:flex-row gap-4 justify-between bg-black bg-opacity-30">
-                        <div class="flex gap-3">
-                            <select id="absen-jadwal-select" onchange="fetchAbsensi()" class="form-select px-4 py-2 rounded-lg text-sm border-amber-500 text-amber-50 shadow-[0_0_10px_rgba(251,191,36,0.1)]"><option value="">-- Pilih Jadwal Kelas --</option></select>
-                            <select id="filter-absen-fungsi" onchange="renderAbsensiTable()" class="form-select px-4 py-2 rounded-lg text-sm"><option value="Semua">Semua Fungsi</option><option value="Peserta">Peserta</option><option value="Pembina">Pembina</option></select>
-                            <input type="text" id="search-absen" placeholder="Cari nama..." onkeyup="renderAbsensiTable()" class="form-input px-4 py-2 rounded-lg text-sm">
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <select id="absen-jadwal-select" onchange="fetchAbsensi()" class="form-select px-4 py-2 rounded-lg text-sm border-amber-500 text-amber-50 shadow-[0_0_10px_rgba(251,191,36,0.1)] w-full sm:w-auto"><option value="">-- Pilih Jadwal Kelas --</option></select>
+                            <select id="filter-absen-fungsi" onchange="renderAbsensiTable()" class="form-select px-4 py-2 rounded-lg text-sm w-full sm:w-auto"><option value="Semua">Semua Fungsi</option><option value="Peserta">Peserta</option><option value="Pembina">Pembina</option></select>
+                            <input type="text" id="search-absen" placeholder="Cari nama..." onkeyup="renderAbsensiTable()" class="form-input px-4 py-2 rounded-lg text-sm w-full sm:w-auto">
                         </div>
-                        <div class="flex gap-4 items-center">
+                        <div class="flex gap-4 items-center justify-between w-full md:w-auto pt-2 md:pt-0">
                             <span class="text-sm text-gray-400 font-medium">Hadir: <span id="absen-total-hadir" class="text-emerald-400 font-bold text-xl ml-1">0</span></span>
                             <button onclick="saveAbsensi()" id="btn-save-absen" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-sm transition-colors shadow-lg flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -294,11 +329,14 @@
                 </div>
 
                 <div id="absen-tab-rekap" class="glass-card rounded-2xl overflow-hidden hidden-view animate-fade-in">
-                    <div class="p-5 border-b border-gray-700 flex justify-between bg-black bg-opacity-30">
-                        <div class="flex gap-3"><input type="text" id="search-rekap" placeholder="Cari nama..." onkeyup="renderRekapTable()" class="form-input px-4 py-2 rounded-lg text-sm"><select id="filter-rekap-fungsi" onchange="renderRekapTable()" class="form-select px-4 py-2 rounded-lg text-sm"><option value="Semua">Semua Fungsi</option><option value="Peserta">Peserta</option><option value="Pembina">Pembina</option></select></div>
-                        <div class="flex gap-2">
+                    <div class="p-5 border-b border-gray-700 flex flex-col md:flex-row justify-between bg-black bg-opacity-30 gap-4">
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <select id="filter-rekap-fungsi" onchange="renderRekapTable()" class="form-select px-4 py-2 rounded-lg text-sm w-full sm:w-auto"><option value="Semua">Semua Fungsi</option><option value="Peserta">Peserta</option><option value="Pembina">Pembina</option></select>
+                            <input type="text" id="search-rekap" placeholder="Cari nama..." onkeyup="renderRekapTable()" class="form-input px-4 py-2 rounded-lg text-sm w-full sm:w-auto">
+                        </div>
+                        <div class="flex gap-2 w-full sm:w-auto justify-end">
                             <button onclick="downloadRekapExcel()" class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> Excel</button>
-                            <button onclick="fetchRekapAbsensi()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-amber-400 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Muat Ulang</button>
+                            <button onclick="fetchRekapAbsensi()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-amber-400 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Refresh</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto w-full max-h-[60vh] bg-gray-900"><table class="min-w-max w-full text-sm"><thead id="rekap-table-head" class="sticky top-0 bg-gray-900 shadow-md border-b border-gray-700"></thead><tbody id="rekap-table-body"><tr><td class="text-center py-8 text-gray-400">Klik 'Muat Ulang' untuk mengambil data...</td></tr></tbody></table></div>
@@ -315,28 +353,30 @@
                     <h3 class="text-lg font-bold text-amber-400 mb-4">Pengaturan Logo</h3>
                     <div class="flex gap-4 items-end">
                         <div class="flex-1"><label class="block text-xs text-gray-400 mb-1">URL Logo Baru</label><input type="text" id="setting-logo-url" class="form-input w-full px-4 py-2 rounded-lg"></div>
-                        <button onclick="updateLogo()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 transition-colors text-white rounded-lg font-semibold">Simpan Logo</button>
+                        <button onclick="updateLogo()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 transition-colors text-white rounded-lg font-semibold">Simpan</button>
                     </div>
                 </div>
 
                 <div class="glass-card p-6 rounded-2xl">
                     <h3 class="text-lg font-bold text-amber-400 mb-4">Manajemen Akun Admin</h3>
-                    <form onsubmit="addAccount(event)" class="bg-black bg-opacity-30 p-4 rounded-xl border border-gray-700 mb-6 flex gap-4 items-end">
+                    <form onsubmit="addAccount(event)" class="bg-black bg-opacity-30 p-4 rounded-xl border border-gray-700 mb-6 flex flex-col md:flex-row gap-4 md:items-end">
                         <div class="flex-1"><label class="block text-xs text-gray-400 mb-1">Username Baru</label><input type="text" id="new-acc-user" placeholder="Username" class="form-input w-full px-3 py-2 rounded-lg" required></div>
                         <div class="flex-1"><label class="block text-xs text-gray-400 mb-1">Password Baru</label><input type="text" id="new-acc-pass" placeholder="Password" class="form-input w-full px-3 py-2 rounded-lg" required></div>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition-colors text-white rounded-lg font-semibold">Tambah</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 transition-colors text-white rounded-lg font-semibold w-full md:w-auto mt-2 md:mt-0">Tambah</button>
                     </form>
-                    <table class="w-full text-sm">
-                        <thead><tr><th>Username</th><th>Password</th><th class="text-right">Aksi</th></tr></thead>
-                        <tbody id="accounts-table-body"><tr><td colspan="3" class="text-center py-4">Memuat data akun...</td></tr></tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead><tr><th>Username</th><th>Password</th><th class="text-right">Aksi</th></tr></thead>
+                            <tbody id="accounts-table-body"><tr><td colspan="3" class="text-center py-4">Memuat data akun...</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="glass-card p-6 rounded-2xl">
                     <h3 class="text-lg font-bold text-amber-400 mb-4">Edit Jadwal Kelas SPK</h3>
                     <div id="schedule-edit-container" class="space-y-3 mb-4"></div>
                     <div class="flex justify-between pt-4 border-t border-gray-700">
-                        <button onclick="addScheduleRow()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 transition-colors rounded-lg text-white font-semibold text-sm">+ Baris Jadwal</button>
+                        <button onclick="addScheduleRow()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 transition-colors rounded-lg text-white font-semibold text-sm">+ Baris</button>
                         <button onclick="saveSchedule()" class="px-6 py-2 bg-amber-500 hover:bg-amber-400 transition-colors text-gray-900 font-bold rounded-lg flex items-center gap-2">Simpan Jadwal</button>
                     </div>
                 </div>
@@ -353,7 +393,7 @@
         let APP_STATE = { isLoggedIn: false, rawParticipantsData: [], rawScheduleData: [], currentAbsenData: new Set(), rekapAbsenData: {}, chartInstance: null };
         const modal = document.getElementById('custom-modal'); const editModal = document.getElementById('edit-modal');
 
-        // Fungsi Formatting Tanggal (Solusi Format Tanggal Error)
+        // Fungsi Formatting Tanggal Cantik (Solusi Format ISO Google Sheets)
         function formatTanggalCantik(isoString, type = 'long') {
             if (!isoString) return '-';
             try {
@@ -380,17 +420,37 @@
 
         function nav(tab) {
             if(!APP_STATE.isLoggedIn) return;
+            
+            // Atur class untuk semua menu Desktop & HP
             ['dashboard', 'data', 'jadwal', 'absen', 'setting'].forEach(t => { 
                 document.getElementById(`section-${t}`).classList.add('hidden-view'); 
+                
+                // Desktop
                 document.getElementById(`nav-${t}`).classList.replace('text-amber-400', 'text-gray-300'); 
                 document.getElementById(`nav-${t}`).classList.remove('bg-white', 'bg-opacity-5'); 
+                
+                // Mobile
+                const mobBtn = document.getElementById(`mob-nav-${t}`);
+                if(mobBtn) mobBtn.classList.replace('text-amber-400', 'text-white');
             });
+            
+            // Tampilkan section terpilih
             document.getElementById(`section-${tab}`).classList.remove('hidden-view'); 
+            
+            // Desktop Active
             document.getElementById(`nav-${tab}`).classList.replace('text-gray-300', 'text-amber-400'); 
             document.getElementById(`nav-${tab}`).classList.add('bg-white', 'bg-opacity-5');
             
-            if(tab === 'dashboard') fetchDashboardStats(); if(tab === 'data' && APP_STATE.rawParticipantsData.length === 0) fetchParticipants();
-            if(tab === 'jadwal') fetchSchedule(); if(tab === 'absen') prepareAbsenTab(); if(tab === 'setting') fetchSettings();
+            // Mobile Active
+            const activeMobBtn = document.getElementById(`mob-nav-${tab}`);
+            if(activeMobBtn) activeMobBtn.classList.replace('text-white', 'text-amber-400');
+            
+            // Tarik data saat di-klik
+            if(tab === 'dashboard') fetchDashboardStats(); 
+            if(tab === 'data' && APP_STATE.rawParticipantsData.length === 0) fetchParticipants();
+            if(tab === 'jadwal') fetchSchedule(); 
+            if(tab === 'absen') prepareAbsenTab(); 
+            if(tab === 'setting') fetchSettings();
         }
 
         async function handleLogin(e) {
@@ -445,7 +505,7 @@
         }
 
         // ==========================================
-        // FILTER FUNCTION UPDATED UNTUK DROPDOWN FUNGSI
+        // FILTER FUNCTION DROPDOWN & PENCARIAN
         // ==========================================
         function filterTable() { 
             const q = document.getElementById('search-data').value.toLowerCase(); 
@@ -605,7 +665,7 @@
             try { await apiRequest('manageAccount', { subAction: 'add', username: document.getElementById('new-acc-user').value, password: document.getElementById('new-acc-pass').value }); document.getElementById('new-acc-user').value = ''; document.getElementById('new-acc-pass').value = ''; fetchSettings(); } catch(e){} finally { btn.disabled = false; }
         }
         async function deleteAccount(id) { if(confirm("Hapus akun?")) { try { await apiRequest('manageAccount', { subAction: 'delete', rowId: id }); fetchSettings(); } catch(e){} } }
-        function updateLogo() { const url = document.getElementById('setting-logo-url').value; if(!url) return; document.getElementById('sidebar-logo').src = url; document.getElementById('login-logo').src = url; showModal("Berhasil", "Pratinjau logo telah diubah.", false); }
+        function updateLogo() { const url = document.getElementById('setting-logo-url').value; if(!url) return; document.getElementById('sidebar-logo').src = url; document.getElementById('mobile-logo').src = url; document.getElementById('login-logo').src = url; showModal("Berhasil", "Pratinjau logo telah diubah.", false); }
     </script>
 </body>
 </html>
